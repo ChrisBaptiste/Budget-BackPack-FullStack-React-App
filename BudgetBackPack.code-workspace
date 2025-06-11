@@ -1,0 +1,95 @@
+{
+  "folders": [
+    {
+      "name": "Frontend",
+      "path": "./Budget-BackPack-FrontEnd-Server"
+    },
+    {
+      "name": "Backend", 
+      "path": "./Budget-BackPack-BackEnd-Server"
+    },
+    {
+      "name": "Root",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "terminal.integrated.defaultProfile.windows": "WSL",
+    "terminal.integrated.profiles.windows": {
+      "WSL": {
+        "path": "wsl.exe",
+        "args": ["-d", "Ubuntu"]
+      }
+    },
+    "remote.WSL.fileWatcher.polling": true,
+    "files.watcherExclude": {
+      "**/node_modules/**": true,
+      "**/dist/**": true,
+      "**/build/**": true,
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true
+    },
+    "eslint.workingDirectories": [
+      "./Budget-BackPack-FrontEnd-Server",
+      "./Budget-BackPack-BackEnd-Server"
+    ],
+    "typescript.preferences.includePackageJsonAutoImports": "auto",
+    "javascript.preferences.includePackageJsonAutoImports": "auto",
+    "emmet.includeLanguages": {
+      "javascript": "javascriptreact"
+    },
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"  
+    },
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-vscode-remote.remote-wsl",
+      "saoudrizwan.claude-dev",
+      "esbenp.prettier-vscode",
+      "dbaeumer.vscode-eslint",
+      "dsznajder.es7-react-js-snippets",
+      "burkeholland.simple-react-snippets",
+      "christian-kohler.npm-intellisense",
+      "github.copilot",
+      "github.copilot-chat"
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Launch Frontend (Vite)",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceFolder}/Budget-BackPack-FrontEnd-Server",
+        "runtimeExecutable": "npm",
+        "runtimeArgs": ["run", "dev"]
+      },
+      {
+        "name": "Launch Backend (Node)",
+        "type": "node", 
+        "request": "launch",
+        "program": "${workspaceFolder}/Budget-BackPack-BackEnd-Server/server.js",
+        "cwd": "${workspaceFolder}/Budget-BackPack-BackEnd-Server",
+        "env": {
+          "NODE_ENV": "development"
+        }
+      }
+    ],
+    "compounds": [
+      {
+        "name": "Launch Full Stack",
+        "configurations": ["Launch Frontend (Vite)", "Launch Backend (Node)"]
+      }
+    ]
+  }
+}
