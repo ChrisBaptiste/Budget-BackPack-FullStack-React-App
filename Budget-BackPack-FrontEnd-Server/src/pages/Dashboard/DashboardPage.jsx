@@ -98,98 +98,267 @@ const DashboardPage = () => {
       setPortalLoading(false);
     }
   };
-
   return (
     <div className="dashboard-container">
-      <header className="dashboard-header">
-        <h1>My Travel Dashboard</h1>
-        {user && <p className="welcome-message">Welcome, {user.username || 'Traveler'}!</p>}
-        <p>Here you can manage your upcoming adventures and plan new ones.</p>
+      {/* Hero Section */}
+      <header className="dashboard-hero">
+        <div className="hero-content">
+          <h1>My Travel Dashboard</h1>
+          {user && <p className="welcome-message">Welcome back, {user.username || 'Traveler'}! ✈️</p>}
+          <p className="hero-subtitle">Your adventure starts here</p>
+        </div>
+        <div className="hero-actions">
+          <Link to="/create-trip" className="btn btn-primary btn-large">
+            <span className="btn-icon">🎒</span>
+            Plan a New Trip
+          </Link>
+        </div>
       </header>
 
-      <section className="account-status-section">
-        <h2>Account Status</h2>
-        <p>Current Tier: <span className={`tier-badge tier-${userTier}`}>{userTier}</span></p>
-        {userTier === 'free' && (
-          <button onClick={() => navigate('/pricing')} className="btn btn-secondary">
-            ✨ Go Premium
-          </button>
-        )}
-        {userTier === 'premium' && subscriptionDetails && (
-          <div className="subscription-management">
-            <p>Subscription Status: <span className={`status-badge status-${subscriptionDetails.status}`}>{subscriptionDetails.status}</span></p>
-            {subscriptionDetails.currentPeriodEnd && (
-              <p>Renews on: {new Date(subscriptionDetails.currentPeriodEnd).toLocaleDateString()}</p>
-            )}
-            {subscriptionDetails.cancelAtPeriodEnd && (
-              <p className="warning-message">Your subscription will be canceled at the end of the current period.</p>
-            )}
-            <button onClick={handleManageSubscription} disabled={portalLoading} className="btn btn-secondary">
-              {portalLoading ? 'Loading Portal...' : 'Manage Subscription'}
-            </button>
-            {portalError && <p className="error-message" style={{marginTop: '10px'}}>{portalError}</p>}
+      {/* Grid Dashboard Layout */}
+      <div className="dashboard-grid">
+        
+        {/* Account Status Card */}
+        <div className="dashboard-card account-card">
+          <div className="card-header">
+            <h3>
+              <span className="card-icon">👤</span>
+              Account Status
+            </h3>
           </div>
-        )}
-      </section>
-
-      {userTier === 'premium' && referralStats.referralCode && (
-        <section className="referral-section">
-          <h2>Refer & Earn (Coming Soon!)</h2>
-          {referralStatsLoading ? (
-            <p>Loading your referral details...</p>
-          ) : (
-            <>
-              <p>
-                Your Referral Code: <strong className="referral-code">{referralStats.referralCode}</strong>
-                <button onClick={handleCopyToClipboard} className="btn btn-small btn-outline-secondary copy-btn">
-                  {copySuccess || 'Copy'}
+          <div className="card-content">
+            <div className="tier-display">
+              <span className="tier-label">Current Plan</span>
+              <span className={`tier-badge tier-${userTier}`}>
+                {userTier === 'premium' ? '⭐ Premium' : '🆓 Free'}
+              </span>
+            </div>
+            
+            {userTier === 'free' && (
+              <button onClick={() => navigate('/pricing')} className="btn btn-upgrade">
+                <span className="btn-icon">✨</span>
+                Upgrade to Premium
+              </button>
+            )}
+            
+            {userTier === 'premium' && subscriptionDetails && (
+              <div className="subscription-details">
+                <div className="status-row">
+                  <span>Status:</span>
+                  <span className={`status-badge status-${subscriptionDetails.status}`}>
+                    {subscriptionDetails.status}
+                  </span>
+                </div>
+                {subscriptionDetails.currentPeriodEnd && (
+                  <div className="renewal-info">
+                    <span>Renews:</span>
+                    <span>{new Date(subscriptionDetails.currentPeriodEnd).toLocaleDateString()}</span>
+                  </div>
+                )}
+                {subscriptionDetails.cancelAtPeriodEnd && (
+                  <div className="warning-notice">
+                    ⚠️ Subscription will cancel at period end
+                  </div>
+                )}
+                <button 
+                  onClick={handleManageSubscription} 
+                  disabled={portalLoading} 
+                  className="btn btn-outline"
+                >
+                  {portalLoading ? 'Loading...' : 'Manage Subscription'}
                 </button>
-              </p>
-              <p>Successful Referrals: {referralStats.successfulReferrals}</p>
-              <small>Share your code with friends. When they sign up and subscribe to Premium, you'll get rewards (details coming soon)!</small>
-            </>
-          )}
-        </section>
-      )}
-
-      <section className="dashboard-actions">
-        <Link to="/create-trip" className="btn btn-primary">Plan a New Trip</Link>
-      </section>
-
-      <section className="trips-section">
-        <h2>Your Trips</h2>
-        {loadingTrips && <p>Loading your trips...</p>}
-        {error && <p className="error-message">{error}</p>}
-        {!loadingTrips && !error && trips.length === 0 && (
-          <p>You haven't planned any trips yet. Let's get started!</p>
-        )}
-        {!loadingTrips && !error && trips.length > 0 && (
-          <div className="trips-timeline">
-            {trips.map(trip => (
-              <div key={trip._id} className="trip-timeline-item">
-                <div className="trip-timeline-date">
-                  <span className="date-start">{new Date(trip.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
-                  <span className="date-separator">to</span>
-                  <span className="date-end">{new Date(trip.endDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                </div>
-                <div className="trip-timeline-content">
-                  <h3>
-                    <Link to={`/trip/${trip._id}`}>{trip.tripName}</Link>
-                  </h3>
-                  <p className="destination">{trip.destinationCity}, {trip.destinationCountry}</p>
-                  {trip.budget > 0 && ( // Display budget only if it's set
-                    <p className="budget">Budget: ${trip.budget.toLocaleString()}</p>
-                  )}
-                   <p className="trip-visibility">
-                    Status: {trip.isPublic ? 'Public' : 'Private'}
-                  </p>
-                  <Link to={`/trip/${trip._id}`} className="btn btn-small btn-secondary-outline view-details-btn">View Details</Link>
-                </div>
+                {portalError && <div className="error-message">{portalError}</div>}
               </div>
-            ))}
+            )}
+          </div>
+        </div>
+
+        {/* Trip Stats Card */}
+        <div className="dashboard-card stats-card">
+          <div className="card-header">
+            <h3>
+              <span className="card-icon">📊</span>
+              Trip Statistics
+            </h3>
+          </div>
+          <div className="card-content">
+            <div className="stats-grid">
+              <div className="stat-item">
+                <div className="stat-number">{trips.length}</div>
+                <div className="stat-label">Total Trips</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-number">
+                  {trips.filter(trip => new Date(trip.startDate) > new Date()).length}
+                </div>
+                <div className="stat-label">Upcoming</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-number">
+                  {trips.reduce((total, trip) => total + (trip.budget || 0), 0).toLocaleString()}
+                </div>
+                <div className="stat-label">Total Budget</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Referral Card - Only for Premium Users */}
+        {userTier === 'premium' && referralStats.referralCode && (
+          <div className="dashboard-card referral-card">
+            <div className="card-header">
+              <h3>
+                <span className="card-icon">🎁</span>
+                Refer & Earn
+              </h3>
+              <span className="card-badge">Coming Soon</span>
+            </div>
+            <div className="card-content">
+              {referralStatsLoading ? (
+                <div className="loading-state">Loading referral details...</div>
+              ) : (
+                <>
+                  <div className="referral-code-section">
+                    <label>Your Referral Code:</label>
+                    <div className="code-display">
+                      <code className="referral-code">{referralStats.referralCode}</code>
+                      <button 
+                        onClick={handleCopyToClipboard} 
+                        className="btn btn-copy"
+                        title="Copy to clipboard"
+                      >
+                        {copySuccess || '📋'}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="referral-stats">
+                    <div className="referral-count">
+                      <span className="count">{referralStats.successfulReferrals}</span>
+                      <span className="label">Successful Referrals</span>
+                    </div>
+                  </div>
+                  <p className="referral-description">
+                    Share your code with friends and earn rewards when they subscribe!
+                  </p>
+                </>
+              )}
+            </div>
           </div>
         )}
-      </section>
+
+        {/* Quick Actions Card */}
+        <div className="dashboard-card actions-card">
+          <div className="card-header">
+            <h3>
+              <span className="card-icon">⚡</span>
+              Quick Actions
+            </h3>
+          </div>
+          <div className="card-content">
+            <div className="actions-grid">
+              <Link to="/create-trip" className="action-item">
+                <span className="action-icon">🗺️</span>
+                <span className="action-label">New Trip</span>
+              </Link>
+              <Link to="/search" className="action-item">
+                <span className="action-icon">🔍</span>
+                <span className="action-label">Search</span>
+              </Link>
+              <Link to="/pricing" className="action-item">
+                <span className="action-icon">💎</span>
+                <span className="action-label">Pricing</span>
+              </Link>
+              <Link to="/feed" className="action-item">
+                <span className="action-icon">📱</span>
+                <span className="action-label">Feed</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Trips Section - Full Width */}
+        <div className="dashboard-card trips-card full-width">
+          <div className="card-header">
+            <h3>
+              <span className="card-icon">🧳</span>
+              Your Trips
+            </h3>
+            {trips.length > 0 && (
+              <Link to="/create-trip" className="btn btn-outline btn-small">
+                Add New Trip
+              </Link>
+            )}
+          </div>
+          <div className="card-content">
+            {loadingTrips && (
+              <div className="loading-state">
+                <div className="loading-spinner"></div>
+                <span>Loading your trips...</span>
+              </div>
+            )}
+            
+            {error && <div className="error-message">{error}</div>}
+            
+            {!loadingTrips && !error && trips.length === 0 && (
+              <div className="empty-state">
+                <div className="empty-icon">🎒</div>
+                <h4>No trips planned yet</h4>
+                <p>Start planning your next adventure!</p>
+                <Link to="/create-trip" className="btn btn-primary">
+                  Plan Your First Trip
+                </Link>
+              </div>
+            )}
+            
+            {!loadingTrips && !error && trips.length > 0 && (
+              <div className="trips-grid">
+                {trips.map(trip => (
+                  <div key={trip._id} className="trip-card">
+                    <div className="trip-dates">
+                      <div className="date-start">
+                        {new Date(trip.startDate).toLocaleDateString(undefined, { 
+                          month: 'short', 
+                          day: 'numeric' 
+                        })}
+                      </div>
+                      <div className="date-range">
+                        {new Date(trip.endDate).toLocaleDateString(undefined, { 
+                          month: 'short', 
+                          day: 'numeric', 
+                          year: 'numeric' 
+                        })}
+                      </div>
+                    </div>
+                    <div className="trip-content">
+                      <h4 className="trip-title">
+                        <Link to={`/trip/${trip._id}`}>{trip.tripName}</Link>
+                      </h4>
+                      <p className="trip-destination">
+                        📍 {trip.destinationCity}, {trip.destinationCountry}
+                      </p>
+                      {trip.budget > 0 && (
+                        <p className="trip-budget">
+                          💰 ${trip.budget.toLocaleString()}
+                        </p>
+                      )}
+                      <div className="trip-meta">
+                        <span className={`privacy-badge ${trip.isPublic ? 'public' : 'private'}`}>
+                          {trip.isPublic ? '🌐 Public' : '🔒 Private'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="trip-actions">
+                      <Link to={`/trip/${trip._id}`} className="btn btn-outline btn-small">
+                        View Details
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
