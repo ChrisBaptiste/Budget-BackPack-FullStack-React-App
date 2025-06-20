@@ -37,10 +37,6 @@ const UserSchema = new mongoose.Schema({
       message: (props) =>
         `Password must be at least 6 characters long, contain at least one uppercase letter, and at least one special character and number.`,
     },
-    createdAt: {
-      type: Date,
-      default: Date.now(), // This will automatically be set to the current date and time.
-    },
   },
   // Stripe related fields
   stripeCustomerId: {
@@ -82,7 +78,7 @@ const UserSchema = new mongoose.Schema({
     type: [String], // Array of strings
     default: [],
   }
-});
+}, { timestamps: true });
 
 // Password Hashing Middleware (this runs before saving a user document).
 // I'm using a 'pre-save' hook from Mongoose here.

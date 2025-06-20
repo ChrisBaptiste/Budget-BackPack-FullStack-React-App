@@ -21,13 +21,13 @@ router.post('/create-checkout-session', protect, async (req, res) => {
   const userId = req.user.id;
 
   if (!priceId || !success_url || !cancel_url) {
-    return res.status(400).json({ msg: 'Missing required fields: priceId, success_url, cancel_url' });
+    return res.status(400).json({ errors: [{ msg: 'Missing required fields: priceId, success_url, cancel_url' }] });
   }
 
   try {
     let user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ msg: 'User not found' });
+      return res.status(404).json({ errors: [{ msg: 'User not found' }] });
     }
 
     let stripeCustomerId = user.stripeCustomerId;
@@ -67,7 +67,7 @@ router.post('/create-checkout-session', protect, async (req, res) => {
     res.json({ sessionId: session.id });
   } catch (error) {
     console.error('Error creating Stripe checkout session:', error);
-    res.status(500).json({ msg: 'Server error creating checkout session', error: error.message });
+    res.status(500).json({ errors: [{ msg: 'Server error creating checkout session' }] });
   }
 });
 
@@ -82,7 +82,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
     event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+    return res.status(400).json({ errors: [{ msg: 'Webhook signature verification failed' }] });
   }
 
   // Handle the event
@@ -100,14 +100,14 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
 
         if (!userId || !stripeCustomerId || !stripeSubscriptionId) {
           console.error('Webhook Error: checkout.session.completed missing crucial data.', { userId, stripeCustomerId, stripeSubscriptionId });
-          return res.status(400).json({ error: 'Missing data in webhook payload for checkout.session.completed' });
+          return res.status(400).json({ errors: [{ msg: 'Missing data in webhook payload for checkout.session.completed' }] });
         }
 
         // Retrieve the subscription details to get priceId and current period info
         const stripeSubscription = await stripe.subscriptions.retrieve(stripeSubscriptionId);
         if (!stripeSubscription) {
           console.error(`Webhook Error: Could not retrieve subscription ${stripeSubscriptionId} from Stripe.`);
-          return res.status(400).json({ error: 'Failed to retrieve subscription details from Stripe.' });
+          return res.status(400).json({ errors: [{ msg: 'Failed to retrieve subscription details from Stripe.' }] });
         }
 
         const priceId = stripeSubscription.items.data[0]?.price.id;
@@ -116,7 +116,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
         const user = await User.findById(userId);
         if (!user) {
           console.error(`Webhook Error: User not found with ID: ${userId}`);
-          return res.status(404).json({ error: 'User not found' });
+          return res.status(404).json({ errors: [{ msg: 'User not found' }] });
         }
         user.stripeCustomerId = stripeCustomerId;
         user.subscriptionId = stripeSubscriptionId;
@@ -162,7 +162,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
 
       } catch (dbError) {
         console.error('Webhook dbError (checkout.session.completed):', dbError);
-        return res.status(500).json({ error: 'Database error processing webhook for checkout.session.completed' });
+        return res.status(500).json({ errors: [{ msg: 'Database error processing webhook for checkout.session.completed' }] });
       }
       break;
 
@@ -175,7 +175,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
           console.error(`Webhook Error: Subscription with ID ${subscriptionUpdated.id} not found in DB for update.`);
           // Optionally, you could create it if it's missing and the status is active/trialing
           // For now, we'll assume it should exist if we're getting an update.
-          return res.status(404).json({ error: 'Subscription not found in database for update.' });
+          return res.status(404).json({ errors: [{ msg: 'Subscription not found in database for update.' }] });
         }
 
         existingSubscription.status = subscriptionUpdated.status;
@@ -198,7 +198,6 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
             // If subscription truly ended (not just cancel_at_period_end=true)
              if (userToUpdate.subscriptionId === subscriptionUpdated.id) {
                 userToUpdate.userTier = 'free';
-                // userToUpdate.subscriptionId = null; // Keep or clear based on preference
                 // Referral code remains even if they downgrade
                 await userToUpdate.save();
              }
@@ -228,7 +227,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
         console.log('Subscription record updated from customer.subscription.updated event.');
       } catch (dbError) {
         console.error('Webhook dbError (customer.subscription.updated):', dbError);
-        return res.status(500).json({ error: 'Database error processing webhook for customer.subscription.updated' });
+        return res.status(500).json({ errors: [{ msg: 'Database error processing webhook for customer.subscription.updated' }] });
       }
       break;
 
@@ -246,7 +245,6 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
           const user = await User.findById(sub.userId);
           if (user && user.subscriptionId === subscriptionDeleted.id) { // Only update if this was their active subscription
             user.userTier = 'free';
-            // user.subscriptionId = null; // Optionally clear if you don't need to link to the ended sub
             await user.save();
             console.log(`User ${user.id} tier set to free due to subscription deletion.`);
           }
@@ -255,7 +253,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
         }
       } catch (dbError) {
         console.error('Webhook dbError (customer.subscription.deleted):', dbError);
-        return res.status(500).json({ error: 'Database error processing webhook for customer.subscription.deleted' });
+        return res.status(500).json({ errors: [{ msg: 'Database error processing webhook for customer.subscription.deleted' }] });
       }
       break;
 
@@ -303,7 +301,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
             }
         } catch (dbError) {
             console.error('Webhook dbError (invoice.payment_succeeded):', dbError);
-            return res.status(500).json({ error: 'Database error processing webhook for invoice.payment_succeeded' });
+            return res.status(500).json({ errors: [{ msg: 'Database error processing webhook for invoice.payment_succeeded' }] });
         }
       }
       break;
@@ -341,7 +339,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
             }
         } catch (dbError) {
             console.error('Webhook dbError (invoice.payment_failed):', dbError);
-            return res.status(500).json({ error: 'Database error processing webhook for invoice.payment_failed' });
+            return res.status(500).json({ errors: [{ msg: 'Database error processing webhook for invoice.payment_failed' }] });
         }
       }
       break;
@@ -363,13 +361,13 @@ router.post('/create-customer-portal-session', protect, async (req, res) => {
   const userId = req.user.id;
 
   if (!return_url) {
-    return res.status(400).json({ msg: 'Missing required field: return_url' });
+    return res.status(400).json({ errors: [{ msg: 'Missing required field: return_url' }] });
   }
 
   try {
     const user = await User.findById(userId);
     if (!user || !user.stripeCustomerId) {
-      return res.status(404).json({ msg: 'Stripe customer ID not found for this user. No active subscription to manage.' });
+      return res.status(404).json({ errors: [{ msg: 'Stripe customer ID not found for this user. No active subscription to manage.' }] });
     }
 
     const portalSession = await stripe.billingPortal.sessions.create({
@@ -380,7 +378,7 @@ router.post('/create-customer-portal-session', protect, async (req, res) => {
     res.json({ url: portalSession.url });
   } catch (error) {
     console.error('Error creating Stripe customer portal session:', error);
-    res.status(500).json({ msg: 'Server error creating customer portal session', error: error.message });
+    res.status(500).json({ errors: [{ msg: 'Server error creating customer portal session' }] });
   }
 });
 
@@ -392,7 +390,7 @@ router.get('/my-subscription', protect, async (req, res) => {
   try {
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ msg: 'User not found' });
+      return res.status(404).json({ errors: [{ msg: 'User not found' }] });
     }
 
     // Find the most relevant subscription.
@@ -433,7 +431,7 @@ router.get('/my-subscription', protect, async (req, res) => {
 
   } catch (error) {
     console.error('Error fetching user subscription details:', error);
-    res.status(500).json({ msg: 'Server error fetching subscription details', error: error.message });
+    res.status(500).json({ errors: [{ msg: 'Server error fetching subscription details' }] });
   }
 });
 
