@@ -11,20 +11,38 @@ const User = require('../models/User');
 // -----------    Creating a new trip for the logged-in user.  ---------  //
 
 router.post('/', protect, async (req, res) => {
-    const { tripName, destinationCity, destinationCountry, startDate, endDate, notes } = req.body;
+    const { tripName, destinationCity, destinationCountry, startDate, endDate, notes, budget, isPublic } = req.body;
     // Using req.user.id which comes from the 'protect' middleware
     console.log(`TRIP_CREATE: Request received by user ${req.user.id} to create trip: ${tripName}`); 
 
     try {
-        const newTrip = new Trip({
+        // Fetch the user to check their tier for isPublic flag
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            // This should ideally not happen if protect middleware works correctly
+            return res.status(404).json({ msg: 'User not found' });
+        }
+
+        const newTripData = {
             user: req.user.id,
             tripName,
             destinationCity,
             destinationCountry,
             startDate,
             endDate,
-            notes
-        });
+            notes,
+            budget: budget || 0, // Default budget to 0 if not provided
+            isPublic: isPublic || false, // Default isPublic to false
+        };
+
+        // Ensure isPublic is false for free users if they try to set it to true
+        if (newTripData.isPublic === true && user.userTier !== 'premium') {
+            // Log this attempt, but override to false for free users
+            console.log(`TRIP_CREATE: Free user ${user.id} attempted to create a public trip. Forcing to private.`);
+            newTripData.isPublic = false;
+        }
+
+        const newTrip = new Trip(newTripData);
 
         console.log(`TRIP_CREATE: Attempting to save new trip "${tripName}" for user ${req.user.id}`); 
         const trip = await newTrip.save(); // This is the database save operation
@@ -100,19 +118,26 @@ router.get('/:tripId', protect, async (req, res) => {
 
 router.put('/:tripId', protect, async (req, res) => {
     // Getting the fields to update from the request body.
-    const { tripName, destinationCity, destinationCountry, startDate, endDate, notes } = req.body;
+    const { tripName, destinationCity, destinationCountry, startDate, endDate, notes, isPublic, budget } = req.body;
 
     // Building an object with the fields to update.
-    // Only including fields that are actually provided in the request.
     const tripFields = {};
-    if (tripName !== undefined) tripFields.tripName = tripName; // Using !== undefined to allow empty strings if desired
+    if (tripName !== undefined) tripFields.tripName = tripName;
     if (destinationCity !== undefined) tripFields.destinationCity = destinationCity;
     if (destinationCountry !== undefined) tripFields.destinationCountry = destinationCountry;
     if (startDate !== undefined) tripFields.startDate = startDate;
     if (endDate !== undefined) tripFields.endDate = endDate;
     if (notes !== undefined) tripFields.notes = notes;
+    if (budget !== undefined) tripFields.budget = budget;
+    // isPublic is handled separately below due to tier check
 
     try {
+        // Fetch the user first to check their tier
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+
         let trip = await Trip.findById(req.params.tripId);
 
         if (!trip) {
@@ -120,22 +145,36 @@ router.put('/:tripId', protect, async (req, res) => {
         }
 
         // Ensuring the logged-in user owns this trip before allowing an update.
-        if (trip.user.toString() !== req.user.id) {
+        if (trip.user.toString() !== user.id) { // Compare with fetched user's id
             return res.status(401).json({ msg: 'User not authorized to update this trip' });
         }
+
+        // Handle the isPublic field based on user tier
+        if (isPublic !== undefined) {
+            if (isPublic === true && user.userTier !== 'premium') {
+                return res.status(403).json({ msg: 'Access denied: Making a trip public is a premium feature.' });
+            }
+            tripFields.isPublic = isPublic;
+        } else if (req.body.hasOwnProperty('isPublic') && isPublic === false && user.userTier !== 'premium') {
+            // If a free user tries to set isPublic to false (which is default), allow it.
+            // This case is mostly for completeness, as they wouldn't be able to set it to true first.
+            tripFields.isPublic = false;
+        }
+        // If isPublic is not in req.body, it's not changed, so no specific handling needed here for that case.
+
 
         // Performing the update.
         // Using { new: true } to return the modified document rather than the original.
         // Using { runValidators: true } to ensure schema validations are run on update.
-        trip = await Trip.findByIdAndUpdate(
+        const updatedTrip = await Trip.findByIdAndUpdate(
             req.params.tripId,
             { $set: tripFields },
             { new: true, runValidators: true }
         );
 
-        res.json(trip);
+        res.json(updatedTrip);
     } catch (err) {
-        console.error("Error updating trip:", err.message);
+        console.error("Error updating trip:", err); // Log the full error
         if (err.name === 'ValidationError') {
             const messages = Object.values(err.errors).map(val => val.message);
             return res.status(400).json({ errors: messages.map(msg => ({ msg })) });
@@ -143,7 +182,7 @@ router.put('/:tripId', protect, async (req, res) => {
         if (err.name === 'CastError') {
             return res.status(400).json({ msg: 'Invalid trip ID format' });
         }
-        res.status(500).json({ msg: 'Server error while updating trip' });
+        res.status(500).json({ msg: 'Server error while updating trip', errorDetails: err.message });
     }
 });
 

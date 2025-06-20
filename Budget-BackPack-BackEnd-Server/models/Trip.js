@@ -75,6 +75,15 @@ const TripSchema = new mongoose.Schema({
     savedFlights: [SavedFlightSchema],
     savedAccommodations: [SavedAccommodationSchema], // Now using the refined schema
     savedActivities: [SavedActivitySchema],
+    isPublic: {
+        type: Boolean,
+        default: false,
+    },
+    budget: { // New field for budget
+        type: Number,
+        optional: true,
+        default: 0,
+    },
     createdAt: {
         type: Date,
         default: Date.now

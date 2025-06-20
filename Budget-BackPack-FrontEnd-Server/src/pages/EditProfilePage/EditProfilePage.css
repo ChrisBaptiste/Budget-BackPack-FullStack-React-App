@@ -1,0 +1,108 @@
+/* src/pages/EditProfilePage/EditProfilePage.css */
+.edit-profile-container {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 25px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.edit-profile-container h2 {
+    text-align: center;
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+.profile-edit-form .form-group {
+    margin-bottom: 20px;
+}
+
+.profile-edit-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #454545;
+}
+
+.profile-edit-form input[type="text"],
+.profile-edit-form input[type="url"],
+.profile-edit-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+}
+
+.profile-edit-form input[type="text"]:focus,
+.profile-edit-form input[type="url"]:focus,
+.profile-edit-form textarea:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.profile-edit-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.profile-preview-small {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: 10px;
+    border: 2px solid #eee;
+}
+
+.preferences-preview {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.preference-tag-edit {
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.form-error-message {
+    color: #dc3545; /* Bootstrap danger color */
+    font-size: 0.875em;
+    margin-top: 5px;
+}
+
+.form-error-message.general-error {
+    text-align: center;
+    padding: 10px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    color: #721c24;
+    margin-bottom: 15px;
+}
+
+.btn-primary {
+    /* Assuming global styles exist, otherwise define: */
+    /* padding: 12px 20px; */
+    /* font-size: 1em; */
+    /* background-color: #007bff; */
+    /* color: white; */
+    /* border: none; */
+    /* border-radius: 4px; */
+    /* cursor: pointer; */
+}
+
+.btn-primary:disabled {
+    background-color: #6c757d; /* Bootstrap secondary color for disabled */
+    cursor: not-allowed;
+}

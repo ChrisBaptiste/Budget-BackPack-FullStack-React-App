@@ -11,6 +11,7 @@ const RegisterPage = () => {
     email: '',
     password: '',
     confirmPassword: '',
+    referralCode: '', // Added referralCode to form state
   });
 
   const [loading, setLoading] = useState(false);
@@ -49,12 +50,16 @@ const RegisterPage = () => {
     setLoading(true);
 
     try {
-      const { username, email, password } = formData;
-      const response = await axios.post('/api/auth/register', {
+      const { username, email, password, referralCode } = formData; // Destructure referralCode
+      const payload = {
         username,
         email,
         password,
-      });
+      };
+      if (referralCode) {
+        payload.referralCode = referralCode; // Add referralCode to payload if present
+      }
+      const response = await axios.post('/api/auth/register', payload);
 
       console.log('Registration successful:', response.data);
       
@@ -172,6 +177,19 @@ const RegisterPage = () => {
               aria-invalid={!!fieldErrors.confirmPassword}
             />
             {fieldErrors.confirmPassword && <p id="confirmPassword-error" className="form-error-message">{fieldErrors.confirmPassword}</p>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="referralCode">Referral Code (Optional)</label>
+            <input
+              type="text"
+              id="referralCode"
+              name="referralCode"
+              value={formData.referralCode}
+              onChange={handleChange}
+              placeholder="Enter if you have one"
+            />
+            {/* No specific error display for referral code, as it's optional and backend handles invalid ones silently for now */}
           </div>
 
           <button type="submit" className="btn btn-primary" style={{width: '100%'}} disabled={loading}>

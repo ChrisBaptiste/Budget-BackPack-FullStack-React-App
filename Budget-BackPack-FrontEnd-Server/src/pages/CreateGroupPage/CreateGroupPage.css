@@ -1,0 +1,128 @@
+/* src/pages/CreateGroupPage/CreateGroupPage.css */
+.create-group-container {
+    max-width: 750px;
+    margin: 30px auto;
+    padding: 25px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.create-group-container h2 {
+    text-align: center;
+    font-size: 2.2em;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.create-group-container p {
+    text-align: center;
+    font-size: 1.1em;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.create-group-form .form-group {
+    margin-bottom: 20px;
+}
+
+.create-group-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #454545;
+}
+
+.create-group-form input[type="text"],
+.create-group-form input[type="url"],
+.create-group-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.create-group-form input[type="text"]:focus,
+.create-group-form input[type="url"]:focus,
+.create-group-form textarea:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.create-group-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.image-preview-small {
+    width: 100px; /* Or a fixed width like 150px */
+    max-height: 100px; /* Max height to maintain aspect ratio for wider images */
+    object-fit: cover; /* Changed to cover to fill the space better */
+    margin-top: 10px;
+    border-radius: 4px;
+    border: 1px solid #eee;
+    display: block; /* To allow margin auto if needed or just to ensure it's on its own line */
+}
+
+.form-group-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between checkbox and label */
+    margin-top: 10px; /* Add some space above */
+}
+
+.form-group-checkbox input[type="checkbox"] {
+    width: auto; /* Override default width for checkboxes */
+    margin-right: 0; /* Adjust if needed */
+    height: 1.2em; /* Standard checkbox size */
+    width: 1.2em;
+}
+
+.form-group-checkbox .checkbox-label {
+    font-weight: normal; /* Label for checkbox might not need to be bold */
+    margin-bottom: 0; /* Align with checkbox */
+    flex-grow: 1;
+}
+
+.form-group-checkbox .form-text.text-muted {
+    font-size: 0.85em;
+    color: #6c757d; /* Bootstrap muted color */
+    display: block; /* Make it appear below the checkbox and label */
+    width: 100%; /* Take full width if needed */
+    margin-left: calc(1.2em + 10px); /* Align with label text, adjust based on checkbox size and gap */
+    margin-top: 5px;
+}
+
+
+/* Error message styling */
+.form-error-message {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 5px;
+}
+
+.form-error-message.general-error {
+    text-align: center;
+    padding: 10px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    color: #721c24;
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    /* Global styles should cover this, but ensure it's full width if desired */
+    /* width: 100%; */
+    padding: 12px 20px;
+    font-size: 1.1em;
+}
+
+.btn-primary:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}

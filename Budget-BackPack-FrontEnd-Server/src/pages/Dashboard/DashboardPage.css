@@ -37,48 +37,132 @@
     margin-bottom: 20px;
     color: #444;
   }
-  
-  .trip-list {
-    list-style: none;
-    padding: 0;
-    display: grid; /* Using grid for a nice layout of trip items. */
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsive columns. */
-    gap: 20px; /* Spacing between trip items. */
+
+  /* Remove old .trip-list and .trip-item styles if they are no longer used */
+  /* ... (assuming they are removed or replaced by timeline styles) ... */
+
+  .trips-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between timeline items */
   }
-  
-  .trip-item {
+
+  .trip-timeline-item {
     background-color: #fff;
-    border: 1px solid #ddd;
+    border: 1px solid #e0e0e0;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+    display: flex;
+    gap: 20px; /* Space between date and content */
+    align-items: flex-start; /* Align items to the top */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .trip-timeline-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  }
+
+  .trip-timeline-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    min-width: 100px; /* Ensure consistent width for date section */
+    text-align: center;
+  }
+
+  .trip-timeline-date .date-start,
+  .trip-timeline-date .date-end {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #333;
   }
   
-  .trip-item:hover {
-    transform: translateY(-5px); /* Slight lift effect on hover. */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  .trip-timeline-date .date-start {
+    color: #007bff; /* Blue for start date */
+  }
+
+  .trip-timeline-date .date-end {
+    font-size: 0.9em;
+    color: #555;
   }
   
-  .trip-item a {
-    text-decoration: none; /* Removing underline from the link covering the trip item. */
-    color: inherit; /* Inheriting text color. */
-    display: block; /* Making the link take up the whole item space. */
+  .trip-timeline-date .date-separator {
+    font-size: 0.8em;
+    color: #777;
+    margin: 3px 0;
   }
-  
-  .trip-item h3 {
+
+  .trip-timeline-content {
+    flex-grow: 1; /* Content takes remaining space */
+  }
+
+  .trip-timeline-content h3 {
     margin-top: 0;
-    margin-bottom: 10px;
-    color: #007bff; /* Making trip names stand out. */
+    margin-bottom: 8px;
+  }
+
+  .trip-timeline-content h3 a {
+    color: #0056b3; /* Darker blue for link */
+    text-decoration: none;
+    font-size: 1.4em;
   }
   
-  .trip-item p {
+  .trip-timeline-content h3 a:hover {
+    text-decoration: underline;
+  }
+
+  .trip-timeline-content .destination {
+    font-size: 1em;
+    color: #555;
     margin-bottom: 5px;
-    font-size: 0.95rem;
-    color: #666;
+  }
+
+  .trip-timeline-content .budget {
+    font-size: 0.95em;
+    color: #28a745; /* Green for budget */
+    font-weight: 500;
+    margin-bottom: 5px;
   }
   
-  .error-message { /* Style for displaying errors */
+  .trip-timeline-content .trip-visibility {
+    font-size: 0.9em;
+    color: #6c757d; /* Muted color for status */
+    margin-bottom: 10px;
+  }
+
+  .trip-timeline-content .view-details-btn {
+    font-size: 0.9em;
+    padding: 6px 12px;
+  }
+
+  /* Responsive adjustments for timeline */
+  @media (max-width: 768px) {
+    .trip-timeline-item {
+      flex-direction: column; /* Stack date and content vertically */
+      gap: 15px;
+    }
+    .trip-timeline-date {
+      min-width: auto; /* Allow date section to be full width */
+      width: 100%;
+      flex-direction: row; /* Date elements side-by-side */
+      justify-content: space-around; /* Space out date elements */
+    }
+    .trip-timeline-date .date-separator {
+      display: none; /* Hide "to" on small screens for brevity or handle differently */
+    }
+    .trip-timeline-content h3 a {
+      font-size: 1.3em;
+    }
+  }
+
+  .error-message {
     color: red;
     text-align: center;
     padding: 10px;
@@ -86,3 +170,135 @@
     border: 1px solid #ef9a9a;
     border-radius: 4px;
   }
+
+  .welcome-message {
+    font-size: 1.2em;
+    color: #333;
+    font-weight: 500;
+  }
+
+  .account-status-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  .account-status-section h2 {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 15px;
+  }
+
+  .account-status-section p {
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 8px;
+  }
+
+  .tier-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    text-transform: capitalize;
+  }
+
+  .tier-free {
+    background-color: #e0e0e0;
+    color: #555;
+  }
+
+  .tier-premium {
+    background-color: #ffd700; /* Gold for premium */
+    color: #333;
+  }
+
+  .subscription-management {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+
+  .status-active, .status-trialing {
+    background-color: #c8e6c9; /* Light green */
+    color: #2e7d32;
+  }
+
+  .status-past_due, .status-incomplete, .status-unpaid {
+    background-color: #ffcdd2; /* Light red */
+    color: #c62828;
+  }
+
+  .status-canceled, .status-ended {
+    background-color: #e0e0e0; /* Grey */
+    color: #555;
+  }
+
+  .warning-message {
+    color: #ef6c00; /* Orange for warnings */
+    font-weight: 500;
+    font-size: 0.95em;
+  }
+
+  .account-status-section .btn-secondary {
+    margin-top: 10px;
+    padding: 10px 20px;
+  }
+
+/* Referral Section Styles */
+.referral-section {
+  background-color: #f0f4f8; /* Light blue/grey background */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.referral-section h2 {
+  font-size: 1.5em;
+  color: #334e68; /* Darker blue text */
+  margin-bottom: 15px;
+}
+
+.referral-section p {
+  font-size: 1em;
+  color: #486581;
+  margin-bottom: 10px;
+}
+
+.referral-code {
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #e0e7ef;
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: #102a43;
+  font-weight: bold;
+  margin: 0 5px;
+}
+
+.copy-btn {
+  margin-left: 10px;
+  padding: 5px 10px; /* Smaller padding for small button */
+  font-size: 0.85em;
+  /* Assuming btn-small and btn-outline-secondary are defined globally or adjust as needed */
+}
+
+.referral-section small {
+  display: block;
+  font-size: 0.9em;
+  color: #627d98;
+  margin-top: 10px;
+}

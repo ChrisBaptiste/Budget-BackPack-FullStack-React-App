@@ -82,3 +82,32 @@
 .nav-button-logout:hover {
   color: #ff8a80; /*  slightly different hover for logout if desired */
 }
+
+/* Styles for user tier display in Navbar */
+.user-tier-display {
+  display: flex;
+  align-items: center;
+  padding: 0 1rem; /* Same padding as other nav-links */
+  color: #fff; /* Adjust as needed */
+  font-size: 0.9rem; /* Slightly smaller or same as nav-links */
+}
+
+.tier-badge-nav {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: bold;
+  text-transform: capitalize;
+  margin-left: 5px; /* Space from any preceding text if user name was there */
+}
+
+/* Consistent with DashboardPage.css but prefixed with -nav for specificity if needed */
+.tier-badge-nav.tier-free {
+  background-color: #e0e0e0;
+  color: #555;
+}
+
+.tier-badge-nav.tier-premium {
+  background-color: #ffd700; /* Gold for premium */
+  color: #333;
+}

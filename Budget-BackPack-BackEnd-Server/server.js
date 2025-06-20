@@ -41,6 +41,10 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/trips', require('./routes/tripRoutes'));
 app.use('/api/search', require('./routes/searchRoutes'));
+app.use('/api/subscriptions', require('./routes/subscriptionRoutes'));
+app.use('/api/referrals', require('./routes/referralRoutes'));
+app.use('/api/posts', require('./routes/socialPostRoutes'));
+app.use('/api/groups', require('./routes/groupRoutes')); // Mount group routes
 
 // Error handling
 app.use(errorHandler);

@@ -1,13 +1,14 @@
 // src/pages/EditTripPage.jsx 
-// (e.g., ClientSide-Server/src/pages/EditTrip/EditTripPage.jsx or ClientSide-Server/src/pages/EditTripPage.jsx)
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import './EditTripPage.css'; // I'm making sure to import its dedicated CSS file.
+import { useAuth } from '../../context/AuthContext'; // Import useAuth
+import './EditTripPage.css';
 
 const EditTripPage = () => {
   const { tripId } = useParams(); 
+  const { userTier } = useAuth(); // Get userTier
   
   const [formData, setFormData] = useState({
     tripName: '',
@@ -16,6 +17,8 @@ const EditTripPage = () => {
     startDate: '',
     endDate: '',
     notes: '',
+    isPublic: false, // Initialize isPublic
+    budget: '', // Initialize budget
   });
 
   const [loading, setLoading] = useState(false); 
@@ -43,6 +46,8 @@ const EditTripPage = () => {
           startDate: tripData.startDate ? new Date(tripData.startDate).toISOString().split('T')[0] : '',
           endDate: tripData.endDate ? new Date(tripData.endDate).toISOString().split('T')[0] : '',
           notes: tripData.notes || '',
+          isPublic: tripData.isPublic || false,
+          budget: tripData.budget || '', // Set budget from fetched data
         });
         setPageLoading(false);
       })
@@ -54,8 +59,11 @@ const EditTripPage = () => {
   }, [tripId]); 
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevData => ({ ...prevData, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
     if (fieldErrors[name]) {
       setFieldErrors(prev => ({ ...prev, [name]: null }));
     }
@@ -176,6 +184,40 @@ const EditTripPage = () => {
           <label htmlFor="notes">Notes (Optional)</label>
           <textarea id="notes" name="notes" value={formData.notes} onChange={handleChange} rows="4"></textarea>
         </div>
+
+        <div className="form-group">
+          <label htmlFor="budget">Budget (Optional, in USD)</label>
+          <input
+            type="number"
+            id="budget"
+            name="budget"
+            value={formData.budget}
+            onChange={handleChange}
+            placeholder="e.g., 1500"
+            min="0"
+            step="1"
+            disabled={pageLoading}
+          />
+        </div>
+
+        {userTier === 'premium' && (
+          <div className="form-group form-group-checkbox">
+            <input
+              type="checkbox"
+              id="isPublic"
+              name="isPublic"
+              checked={formData.isPublic}
+              onChange={handleChange}
+              disabled={pageLoading} // Disable while page is loading initial data
+            />
+            <label htmlFor="isPublic" className="checkbox-label">
+              Make this trip public
+            </label>
+            <small className="form-text text-muted">
+              Public trips can be shared with a link (feature coming soon!).
+            </small>
+          </div>
+        )}
         {/* --- End of Form Groups --- */}
 
         <button type="submit" className="btn btn-primary" style={{width: '100%', marginTop: '10px'}} disabled={loading || pageLoading}>

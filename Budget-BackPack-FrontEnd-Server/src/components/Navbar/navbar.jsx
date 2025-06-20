@@ -2,10 +2,10 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx'; 
-import './Navbar.css'; 
+import './navbar.css';
 
 const Navbar = () => {
-  const { isAuthenticated, logoutAction } = useAuth(); 
+  const { isAuthenticated, logoutAction, userTier, user } = useAuth(); // Added user to get user.id for profile link
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -26,6 +26,11 @@ const Navbar = () => {
         </Link>
         
         <ul className="nav-menu">
+          <li className="nav-item">
+            <Link to="/pricing" className="nav-links">
+              Pricing
+            </Link>
+          </li>
           {isAuthenticated ? (
             <>
               <li className="nav-item">
@@ -34,9 +39,29 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link to="/feed" className="nav-links">
+                  Feed
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/groups" className="nav-links">
+                  Groups
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link to="/search" className="nav-links">
                   Search
                 </Link>
+              </li>
+              {user && ( // Check if user object is loaded
+                <li className="nav-item">
+                  <Link to={`/profile/${user.id}`} className="nav-links">
+                    My Profile
+                  </Link>
+                </li>
+              )}
+              <li className="nav-item user-tier-display">
+                <span className={`tier-badge-nav tier-${userTier}`}>{userTier}</span>
               </li>
               <li className="nav-item">
                 <button onClick={handleLogout} className="nav-links nav-button-logout">

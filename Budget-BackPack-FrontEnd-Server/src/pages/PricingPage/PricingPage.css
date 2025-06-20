@@ -1,0 +1,182 @@
+/* src/pages/PricingPage/PricingPage.css */
+.pricing-page-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .pricing-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .pricing-header h1 {
+    font-size: 2.8em;
+    color: #2c3e50;
+    margin-bottom: 10px;
+  }
+
+  .pricing-header p {
+    font-size: 1.1em;
+    color: #555;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .pricing-plans {
+    display: flex;
+    justify-content: center; /* Center the single card */
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+
+  .pricing-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 30px;
+    width: 100%;
+    max-width: 400px; /* Max width for the card */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .pricing-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .pricing-card h2 {
+    font-size: 1.8em;
+    color: #3498db; /* Premium plan color */
+    margin-bottom: 15px;
+  }
+
+  .pricing-card .price {
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #2ecc71; /* Price color */
+    margin-bottom: 5px;
+  }
+
+  .pricing-card .price-description {
+    font-size: 0.9em;
+    color: #777;
+    margin-bottom: 25px;
+  }
+
+  .features-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 30px;
+    text-align: left;
+  }
+
+  .features-list li {
+    font-size: 1em;
+    color: #444;
+    margin-bottom: 12px;
+    padding-left: 25px;
+    position: relative;
+  }
+
+  .features-list li::before {
+    content: '✔'; /* Checkmark or other icon */
+    color: #2ecc71; /* Icon color */
+    position: absolute;
+    left: 0;
+    font-size: 1.1em;
+  }
+
+  .btn-subscribe {
+    padding: 12px 25px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-primary.btn-subscribe {
+    background-color: #3498db;
+    color: white;
+  }
+
+  .btn-primary.btn-subscribe:hover {
+    background-color: #2980b9;
+  }
+
+  .btn-subscribe:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+  }
+
+  .current-plan-info p {
+    font-size: 1em;
+    color: #27ae60;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #e8f8f0;
+    border-radius: 4px;
+    border: 1px solid #d0e9d9;
+  }
+
+  .error-message {
+    color: #e74c3c;
+    margin-top: 15px;
+    font-weight: bold;
+  }
+
+  .faq-section {
+    margin-top: 50px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .faq-section h3 {
+    text-align: center;
+    font-size: 1.6em;
+    color: #2c3e50;
+    margin-bottom: 25px;
+  }
+
+  .faq-item {
+    margin-bottom: 20px;
+  }
+
+  .faq-item h4 {
+    font-size: 1.1em;
+    color: #34495e;
+    margin-bottom: 5px;
+  }
+
+  .faq-item p {
+    font-size: 1em;
+    color: #555;
+    line-height: 1.6;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .pricing-page-container {
+      margin: 20px;
+      padding: 15px;
+    }
+
+    .pricing-header h1 {
+      font-size: 2.2em;
+    }
+
+    .pricing-card {
+      padding: 20px;
+    }
+  }

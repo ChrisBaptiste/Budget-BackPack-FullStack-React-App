@@ -42,6 +42,46 @@ const UserSchema = new mongoose.Schema({
       default: Date.now(), // This will automatically be set to the current date and time.
     },
   },
+  // Stripe related fields
+  stripeCustomerId: {
+    type: String,
+    unique: true,
+    sparse: true, // Allows multiple documents to have no value for this field, but if a value exists, it must be unique.
+  },
+  userTier: {
+    type: String,
+    enum: ['free', 'premium'],
+    default: 'free',
+  },
+  subscriptionId: { // Stores the active Stripe Subscription ID
+    type: String,
+    sparse: true,
+  },
+  // Referral System Fields
+  referralCode: {
+    type: String,
+    unique: true,
+    sparse: true, // Ensures uniqueness if present, but allows null/missing
+  },
+  referredBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    optional: true,
+  },
+  // User Profile Fields
+  bio: {
+    type: String,
+    maxlength: 250,
+    default: '',
+  },
+  profilePictureUrl: {
+    type: String,
+    default: '/Images/default-profile.png', // Default path
+  },
+  travelPreferences: {
+    type: [String], // Array of strings
+    default: [],
+  }
 });
 
 // Password Hashing Middleware (this runs before saving a user document).

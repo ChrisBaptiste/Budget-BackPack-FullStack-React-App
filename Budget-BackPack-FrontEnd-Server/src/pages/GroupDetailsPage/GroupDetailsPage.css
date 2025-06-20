@@ -1,0 +1,186 @@
+/* src/pages/GroupDetailsPage/GroupDetailsPage.css */
+.group-details-page-container {
+    /* Using .container class for max-width and padding from global styles if available */
+}
+
+.group-details-header {
+    height: 250px; /* Or adjust as needed */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    color: white;
+    display: flex;
+    align-items: flex-end; /* Align content to bottom */
+    padding: 20px;
+    margin-bottom: 20px; /* Space below header */
+    border-radius: 0 0 8px 8px; /* Rounded bottom corners if not full width */
+}
+
+.group-header-overlay {
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0) 100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Content at the bottom of overlay */
+    border-radius: inherit; /* Inherit border radius from parent */
+}
+
+.group-details-header h1 {
+    font-size: 2.8em;
+    margin: 0 0 5px 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+}
+
+.group-privacy {
+    font-size: 0.9em;
+    background-color: rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.group-creator {
+    font-size: 1em;
+    margin-bottom: 0;
+}
+
+.group-creator a {
+    color: #f0f8ff; /* AliceBlue or light color for link */
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.group-creator a:hover {
+    text-decoration: underline;
+}
+
+.group-actions-bar {
+    padding: 15px 0; /* Use global .container for side padding */
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    margin-bottom: 20px; /* Space below actions */
+    border-bottom: 1px solid #eee;
+}
+
+/* Reusing .card-style from ProfilePage or global if available */
+.card-style {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+}
+
+.card-style h3 {
+    font-size: 1.4em;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.group-description-section p {
+    font-size: 1em;
+    line-height: 1.7;
+    color: #555;
+    white-space: pre-wrap; /* Respect newlines in description */
+}
+
+.members-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Responsive grid for members */
+    gap: 15px;
+}
+
+.member-item a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.member-item a:hover {
+    background-color: #f8f9fa;
+}
+
+.member-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+    object-fit: cover;
+}
+
+.member-item span {
+    font-size: 1em;
+    font-weight: 500;
+}
+
+/* Error message styling */
+.error-message.text-center {
+    text-align: center;
+}
+.error-message {
+    color: #D8000C;
+    background-color: #FFD2D2;
+    border: 1px solid #D8000C;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 15px 0; /* Adjust based on context */
+}
+
+/* Button styling (ensure global .btn styles are sufficient or add more specific ones) */
+.btn {
+    padding: 10px 18px;
+    font-size: 0.95em;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: opacity 0.2s ease;
+}
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn-primary { background-color: #007bff; color: white; }
+.btn-secondary { background-color: #6c757d; color: white; }
+.btn-danger { background-color: #dc3545; color: white; }
+.btn-warning { background-color: #ffc107; color: #212529; }
+
+
+@media (max-width: 768px) {
+    .group-details-header {
+        height: 200px; /* Slightly smaller header */
+    }
+    .group-details-header h1 {
+        font-size: 2em;
+    }
+    .group-actions-bar {
+        flex-direction: column; /* Stack buttons */
+        align-items: stretch; /* Make buttons full width */
+    }
+    .group-actions-bar .btn {
+        width: 100%;
+        margin-bottom: 10px; /* Add space between stacked buttons */
+    }
+    .members-list {
+        grid-template-columns: 1fr; /* Single column for members on small screens */
+    }
+}

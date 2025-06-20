@@ -16,6 +16,16 @@ import EditTripPage from './pages/EditTrip/EditTripPage.jsx';     // Assuming th
 import TripDetailsPage from './pages/TripDetailsPage/TripDetailsPage.jsx'; // Assuming this is directly in pages
 import SearchPage from './pages/Search/SearchPage.jsx'; // This is the updated import path for SearchPage.
 import HomePage from './pages/Home/HomePage.jsx';
+import PricingPage from './pages/PricingPage/PricingPage.jsx';
+import SubscriptionSuccessPage from './pages/SubscriptionSuccessPage/SubscriptionSuccessPage.jsx';
+import FeedPage from './pages/FeedPage/FeedPage.jsx';
+import ProfilePage from './pages/ProfilePage/ProfilePage.jsx';
+import EditProfilePage from './pages/EditProfilePage/EditProfilePage.jsx';
+import CreateGroupPage from './pages/CreateGroupPage/CreateGroupPage.jsx'; // Added CreateGroupPage
+import EditGroupPage from './pages/EditGroupPage/EditGroupPage.jsx'; // Added EditGroupPage
+import GroupsListPage from './pages/GroupsListPage/GroupsListPage.jsx'; // Added GroupsListPage
+import GroupDetailsPage from './pages/GroupDetailsPage/GroupDetailsPage.jsx'; // Added GroupDetailsPage
+
 
 import './App.css'; // My global styles
 
@@ -38,6 +48,11 @@ function App() {
             <Route path="/" element={<HomePage />} /> 
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/feed" element={<FeedPage />} />
+            <Route path="/profile/:userId" element={<ProfilePage />} />
+            <Route path="/groups" element={<GroupsListPage />} /> {/* List groups */}
+            <Route path="/groups/:groupId" element={<GroupDetailsPage />} /> {/* Group details */}
 
             {/* --- Protected Routes --- */}
             {/* I'm using my PrivateRoute component as a layout route. */}
@@ -49,7 +64,10 @@ function App() {
               <Route path="/create-trip" element={<CreateTripPage />} />
               <Route path="/trip/:tripId" element={<TripDetailsPage />} />
               <Route path="/trip/:tripId/edit" element={<EditTripPage />} />
-              {/* I can add more protected routes here later, like /profile. */}
+              <Route path="/subscription-success" element={<SubscriptionSuccessPage />} />
+              <Route path="/profile/edit" element={<EditProfilePage />} />
+              <Route path="/groups/new" element={<CreateGroupPage />} /> {/* Create group */}
+              <Route path="/groups/:groupId/edit" element={<EditGroupPage />} /> {/* Edit group */}
             </Route>
             
             {/* Catch-all route for any paths not matched above. */}

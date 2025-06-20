@@ -74,6 +74,20 @@ const SearchEvents = () => {
             <div key={event.id || index} className="result-card event-card">
               <h4>{event.title}</h4>
               {event.iconUrl && <img src={event.iconUrl} alt="" style={{backgroundColor: event.iconBackgroundColor, padding: '2px', borderRadius: '4px', marginRight: '8px', verticalAlign: 'middle', width: '24px', height: '24px'}} />}
+              {event.firstPhotoReference ? (
+                <img
+                  src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${event.firstPhotoReference}&key=${import.meta.env.VITE_GOOGLE_PLACES_API_KEY}`}
+                  alt={event.title}
+                  style={{ width: '100%', height: 'auto', marginTop: '10px', borderRadius: '4px' }}
+                  onError={(e) => { e.target.onerror = null; e.target.src="/Images/no-image-available.png"; }}
+                />
+              ) : (
+                <img
+                  src="/Images/no-image-available.png"
+                  alt="No image available"
+                  style={{ width: '100%', height: 'auto', marginTop: '10px', borderRadius: '4px' }}
+                />
+              )}
               {event.address && <p><strong>Address:</strong> {event.address}</p>}
               {event.rating && <p><strong>Rating:</strong> {event.rating} ({event.userRatingCount} reviews)</p>}
               {event.types && event.types.length > 0 && <p><strong>Type:</strong> {event.primaryType || event.types.join(', ')}</p>}

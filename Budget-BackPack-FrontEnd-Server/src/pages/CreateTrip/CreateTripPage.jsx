@@ -2,12 +2,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from '../../context/AuthContext'; // Import useAuth
 import './CreateTripPage.css';
-// I might want some specific CSS for this page later.
 
 
 const CreateTripPage = () => {
-  // I need state to manage all the form fields for creating a trip.
+  const { userTier } = useAuth(); // Get userTier from AuthContext
   const [formData, setFormData] = useState({
     tripName: '',
     destinationCity: '',
@@ -15,9 +15,11 @@ const CreateTripPage = () => {
     startDate: '',
     endDate: '',
     notes: '',
+    isPublic: false, // Default to private
+    budget: '', // Added budget field
   });
 
-  const [loading, setLoading] = useState(false); // For loading state during API call.
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(''); // For displaying any errors from the API.
   const [fieldErrors, setFieldErrors] = useState({}); // For specific field validation errors (if backend provides them).
 
@@ -25,8 +27,11 @@ const CreateTripPage = () => {
 
   // This function will handle changes in my form inputs.
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevData => ({ ...prevData, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
     // Clear specific field error if user starts typing
     if (fieldErrors[name]) {
       setFieldErrors(prev => ({ ...prev, [name]: null }));
@@ -193,8 +198,39 @@ const CreateTripPage = () => {
             onChange={handleChange}
             rows="4"
           ></textarea>
-          {/* No specific error display for notes unless backend sends one */}
         </div>
+
+        <div className="form-group">
+          <label htmlFor="budget">Budget (Optional, in USD)</label>
+          <input
+            type="number"
+            id="budget"
+            name="budget"
+            value={formData.budget}
+            onChange={handleChange}
+            placeholder="e.g., 1500"
+            min="0"
+            step="1"
+          />
+        </div>
+
+        {userTier === 'premium' && (
+          <div className="form-group form-group-checkbox">
+            <input
+              type="checkbox"
+              id="isPublic"
+              name="isPublic"
+              checked={formData.isPublic}
+              onChange={handleChange}
+            />
+            <label htmlFor="isPublic" className="checkbox-label">
+              Make this trip public
+            </label>
+            <small className="form-text text-muted">
+              Public trips can be shared with a link (feature coming soon!).
+            </small>
+          </div>
+        )}
 
         <button type="submit" className="btn btn-primary" style={{width: '100%', marginTop: '10px'}} disabled={loading}>
           {loading ? 'Creating Trip...' : 'Create Trip'}

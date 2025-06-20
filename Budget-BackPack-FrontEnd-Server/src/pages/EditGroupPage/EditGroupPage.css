@@ -1,0 +1,125 @@
+/* src/pages/EditGroupPage/EditGroupPage.css */
+.edit-group-container {
+    max-width: 750px;
+    margin: 30px auto;
+    padding: 25px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.edit-group-container h2 {
+    text-align: center;
+    font-size: 2em; /* Slightly smaller than create page if desired */
+    color: #333;
+    margin-bottom: 25px;
+}
+
+.edit-group-form .form-group {
+    margin-bottom: 20px;
+}
+
+.edit-group-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #454545;
+}
+
+.edit-group-form input[type="text"],
+.edit-group-form input[type="url"],
+.edit-group-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.edit-group-form input[type="text"]:focus,
+.edit-group-form input[type="url"]:focus,
+.edit-group-form textarea:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.edit-group-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.image-preview-small {
+    width: 100px;
+    max-height: 100px;
+    object-fit: cover;
+    margin-top: 10px;
+    border-radius: 4px;
+    border: 1px solid #eee;
+    display: block;
+}
+
+.form-group-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.form-group-checkbox input[type="checkbox"] {
+    width: auto;
+    margin-right: 0;
+    height: 1.2em;
+    width: 1.2em;
+}
+
+.form-group-checkbox .checkbox-label {
+    font-weight: normal;
+    margin-bottom: 0;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+    margin-top: 25px;
+    justify-content: flex-end; /* Align buttons to the right */
+}
+
+
+/* Error message styling */
+.form-error-message {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 5px;
+}
+
+.form-error-message.general-error {
+    text-align: center;
+    padding: 10px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    color: #721c24;
+    margin-bottom: 20px;
+}
+
+.btn-primary, .btn-secondary-outline {
+    padding: 10px 20px; /* Uniform padding */
+    font-size: 1em;
+}
+
+.btn-primary:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* General text center for loading/error messages */
+.text-center {
+    text-align: center;
+}
+.container.text-center.error-message { /* Specificity for error messages outside form */
+    max-width: 600px;
+    margin: 20px auto;
+}
