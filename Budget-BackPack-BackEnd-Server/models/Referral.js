@@ -24,8 +24,8 @@ const ReferralSchema = new mongoose.Schema({
   },
 });
 
-// Index to quickly find referrals by referrer or referred user
+// Index to quickly find referrals by referrer
 ReferralSchema.index({ referrerId: 1 });
-ReferralSchema.index({ referredUserId: 1 });
+// Note: referredUserId already has an index from unique: true, so no need to add another
 
 module.exports = mongoose.model('Referral', ReferralSchema);
