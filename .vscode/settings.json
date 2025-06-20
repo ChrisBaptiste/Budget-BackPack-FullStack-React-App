@@ -1,0 +1,35 @@
+{
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "bash",
+      "args": ["-l"]
+    }
+  },
+  "claude-dev.commandTimeout": 30000,
+  "claude-dev.autoApprovalEnabled": false,
+  "remote.autoForwardPorts": true,
+  "remote.portsAttributes": {
+    "3000": {
+      "label": "React Dev Server",
+      "onAutoForward": "notify"
+    },
+    "5000": {
+      "label": "Backend API Server", 
+      "onAutoForward": "notify"
+    }
+  },
+  "npm.packageManager": "npm",
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.git": true
+  },
+  "files.associations": {
+    "*.jsx": "javascriptreact",
+    "*.tsx": "typescriptreact"
+  },
+  "git.enableCommitSigning": false,
+  "git.autoRepositoryDetection": true
+}
