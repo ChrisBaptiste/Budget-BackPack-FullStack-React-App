@@ -22,7 +22,12 @@ const protect = async (req, res, next) => {
             // If verification is successful, the 'decoded' object will contain the payload (which has user.id).
             // I'm attaching the user's ID to the request object (req.user).
             // This way, my protected route handlers will know which user is making the request.
-            req.user = { id: decoded.user.id };
+            req.user = await User.findById(decoded.user.id).select('-password');
+
+            // Add this:
+            if (!req.user) {
+                return res.status(401).json({ msg: 'Not authorized, user not found' });
+            }
 
             // Calling next() to pass control to the next middleware or route handler in the stack.
             next();

@@ -28,7 +28,7 @@ router.get('/me', protect, async (req, res) => {
     });
   } catch (err) {
     console.error('Error fetching user profile:', err);
-    res.status(500).json({ msg: 'Server error' });
+    res.status(500).json({ errors: [{ msg: 'Server error retrieving profile' }] });
   }
 });
 
@@ -121,7 +121,7 @@ router.post('/register', async (req, res) => {
             const messages = Object.values(err.errors).map(val => val.message);
             return res.status(400).json({ errors: messages.map(msg => ({ msg })) });
         }
-        res.status(500).send('Server error during registration');
+        res.status(500).json({ errors: [{ msg: 'Server error during registration' }] });
     }
 });
 
@@ -161,7 +161,7 @@ router.post('/login', async (req, res) => {
         );
     } catch (err) {
         console.error("AUTH_LOGIN: Overall error during login for email:", email, "Error:", err.message);
-        res.status(500).send('Server error during login');
+        res.status(500).json({ errors: [{ msg: 'Server error during login' }] });
     }
 });
 
@@ -173,7 +173,7 @@ router.put('/profile', protect, async (req, res) => {
   try {
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ msg: 'User not found' });
+      return res.status(404).json({ errors: [{ msg: 'User not found' }] });
     }
 
     // Update fields if provided
@@ -184,19 +184,27 @@ router.put('/profile', protect, async (req, res) => {
         user.bio = bio;
     }
     if (profilePictureUrl !== undefined) {
-        // Basic validation: check if it's a string. More complex URL validation could be added.
-        if (typeof profilePictureUrl !== 'string') {
-             return res.status(400).json({ errors: [{msg: 'Profile picture URL must be a string.'}]});
+        if (profilePictureUrl === '') {
+            user.profilePictureUrl = ''; // Allow unsetting the picture
+        } else {
+            if (typeof profilePictureUrl !== 'string') {
+                return res.status(400).json({ errors: [{msg: 'Profile picture URL must be a string.'}]});
+            }
+            const urlPattern = /^(https:\/\/|http:\/\/|\/)/;
+            if (!urlPattern.test(profilePictureUrl)) {
+                return res.status(400).json({ errors: [{msg: 'Profile picture URL must be a valid URL (starting with http, https, or /).'}]});
+            }
+            user.profilePictureUrl = profilePictureUrl;
         }
-        // For now, we'll trust the user with the URL or path.
-        // Could add validation to ensure it's a relative path or a valid URL format.
-        user.profilePictureUrl = profilePictureUrl;
     }
     if (travelPreferences !== undefined) {
         if (!Array.isArray(travelPreferences) || !travelPreferences.every(item => typeof item === 'string')) {
             return res.status(400).json({ errors: [{msg: 'Travel preferences must be an array of strings.'}]});
         }
-        user.travelPreferences = travelPreferences;
+        const trimmedPreferences = travelPreferences.map(item => item.trim()).filter(item => item !== '');
+        // Optional: if you want to disallow arrays that become empty after trimming/filtering, add a check here.
+        // For now, we allow it to become an empty array if all items were empty strings.
+        user.travelPreferences = trimmedPreferences;
     }
 
     await user.save();
@@ -222,7 +230,7 @@ router.put('/profile', protect, async (req, res) => {
         const messages = Object.values(error.errors).map(val => val.message);
         return res.status(400).json({ errors: messages.map(msg => ({ msg })) });
     }
-    res.status(500).json({ msg: 'Server error while updating profile' });
+    res.status(500).json({ errors: [{ msg: 'Server error while updating profile' }] });
   }
 });
 
@@ -239,7 +247,7 @@ router.get('/users/:userId/profile', async (req, res) => {
       );
 
       if (!user) {
-        return res.status(404).json({ msg: 'User not found' });
+        return res.status(404).json({ errors: [{ msg: 'User not found' }] });
       }
 
       res.json({
@@ -252,9 +260,9 @@ router.get('/users/:userId/profile', async (req, res) => {
     } catch (err) {
       console.error('Error fetching public user profile:', err);
       if (err.name === 'CastError') {
-        return res.status(400).json({ msg: 'Invalid user ID format' });
+        return res.status(400).json({ errors: [{ msg: 'Invalid user ID format' }] });
       }
-      res.status(500).json({ msg: 'Server error' });
+      res.status(500).json({ errors: [{ msg: 'Server error fetching public profile' }] });
     }
   });
 
